@@ -22,13 +22,14 @@ class ProgressBar(object):
 
         self.__output.write(' [%s%s] %s\r' % ('#' * fill_count, ' ' * spaces_count, line_end))
 
-    def __init__(self, min_value=0, max_value=100, start_value=None, show_as_percents=True, output=sys.stderr):
+    def __init__(self, min_value=0, max_value=100, start_value=None, show_as_percents=True, output=sys.stderr,
+                 width=None):
         self.__min = min_value
         self.__max = max_value
         self.__value = start_value if start_value is not None else min_value
         self.__show_as_percents = show_as_percents
         self.__output = output
-        self.__term_width = get_terminal_size()[1]
+        self.__term_width = width or get_terminal_size()[1]
 
     def start(self):
         self.__redraw()
