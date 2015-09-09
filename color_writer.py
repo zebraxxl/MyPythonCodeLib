@@ -54,7 +54,9 @@ def __make_color(color):
             b = __color_hex_2_int(color[2]) << 8
         else:
             return __colors['default']
-        return str(int(16 + 36 * math.floor(r / 51.0) + 6 * math.floor(g / 51.0) + math.floor(b / 51.0)))
+        if r == g == b:
+            return '8;05;' + str((15 if r > 239 else math.floor(r / 10)) + 232)
+        return '8;05;' + str(int(16 + 36 * math.floor(r / 51.0) + 6 * math.floor(g / 51.0) + math.floor(b / 51.0)))
     else:
         if color in __colors:
             return __colors[color]
