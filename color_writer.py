@@ -73,7 +73,8 @@ def __make_escape(format_string, mode):
     for flag in __escape_flags:
         if flag in params:
             result.append(__escape_flags[flag])
-    for param in params:
+    for p in params:
+        param = p.strip()
         if param[0] == 'f':
             result.append('3' + __make_color(param[1:]))
         elif param[0] == 'b':
@@ -87,12 +88,15 @@ def __make_escape(format_string, mode):
 def color_output(v, output=sys.stdout, force_color=False):
     tmp = StringIO()
 
-    if not force_color and hasattr(output, 'isatty') and not output.isatty():
-        mode = 'flat'
-    elif '256color' in os.environ.get('TERM', ''):
+    if force_color:
         mode = '256'
     else:
-        mode = '16'  # flat, 16 or 256
+        if hasattr(output, 'isatty') and not output.isatty():
+            mode = 'flat'
+        elif '256color' in os.environ.get('TERM', ''):
+            mode = '256'
+        else:
+            mode = '16'  # flat, 16 or 256
 
     i = 0
     while i < len(v):
