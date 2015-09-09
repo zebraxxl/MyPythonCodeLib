@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from StringIO import StringIO
+import os
 import sys
 import math
 
@@ -85,7 +86,13 @@ def __make_escape(format_string, mode):
 # "{fred,#ff0011}"
 def color_output(v, output=sys.stdout, force_color=False):
     tmp = StringIO()
-    mode = '256'  # flat, 16 or 256
+
+    if not force_color and hasattr(output, 'isatty') and not output.isatty():
+        mode = 'flat'
+    elif '256color' in os.environ.get('TERM', ''):
+        mode = '256'
+    else:
+        mode = '16'  # flat, 16 or 256
 
     i = 0
     while i < len(v):
@@ -107,5 +114,4 @@ def color_output(v, output=sys.stdout, force_color=False):
             i += 1
 
     sufix = __all_to_default if mode != 'flat' else ''
-    if mode != 'flat':
-        output.write(tmp.getvalue() + sufix)
+    output.write(tmp.getvalue() + sufix)
